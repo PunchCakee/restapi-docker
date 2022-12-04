@@ -1,17 +1,21 @@
 from fastapi import FastAPI
 import json
-import constants
+from dotenv import load_dotenv
+import os
 
+load_dotenv()  
+
+API_KEY = os.getenv('API_KEY')
 app = FastAPI()
 
 
+# TODO: add docker container updater 
 @app.get("/update/")
-async def root(key: str, container: str):
-    if key == constants.API_KEY:
+async def root(key: str, container: str = None):
+    if key == API_KEY:
         with open("images.json",'r') as file:
             data = json.load(file)
             for container_itr in data:
-                print(container_itr)
                 if container_itr['container'] == container:
                     return {"container": container}
                 else:
@@ -22,4 +26,3 @@ async def root(key: str, container: str):
 @app.get("/")
 async def main():
     return {"it":"works!"}
-
